@@ -49,6 +49,13 @@ namespace BankSystemAPI.Repositories
             return customer;
         }
 
+        public List<Customer> GetAllCustomers()
+        {
+            var customers = _dbContext.Customers.ToList();
+
+            return customers;
+        }
+
         //public Customer GetCustomerByAccount(int accountId)
         //{
         //    var customer = _dbContext.Customers

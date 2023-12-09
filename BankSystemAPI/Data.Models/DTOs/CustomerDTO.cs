@@ -1,4 +1,6 @@
-﻿namespace BankSystemAPI.Data.Models.DTOs
+﻿using System.Text.Json.Serialization;
+
+namespace BankSystemAPI.Data.Models.DTOs
 {
     public class CustomerDTO
     {
@@ -6,5 +8,7 @@
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
+
+        public List<AccountDTO> Accounts { get; set; }
     }
 }

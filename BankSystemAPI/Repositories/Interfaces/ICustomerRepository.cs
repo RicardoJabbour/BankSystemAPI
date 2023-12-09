@@ -8,5 +8,7 @@ namespace BankSystemAPI.Repositories.Interfaces
         //Customer GetCustomerByAccount(int accountId);
         Customer GetCustomerInfoById(int customerId);
         void AddCustomer(Customer customer);
+
+        List<Customer> GetAllCustomers();
     }
 }

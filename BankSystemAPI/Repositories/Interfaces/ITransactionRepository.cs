@@ -6,5 +6,6 @@ namespace BankSystemAPI.Repositories.Interfaces
     {
         Transaction GetTransactionById(int transactionId);
         void AddTransaction(Transaction transaction);
+        List<Transaction> GetAllTransactionsByCustomerId(int customerId);
     }
 }

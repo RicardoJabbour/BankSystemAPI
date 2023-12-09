@@ -1,5 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace BankSystemAPI.Data.Models.Entities
 {
@@ -11,7 +12,7 @@ namespace BankSystemAPI.Data.Models.Entities
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
-
+        
         public ICollection<Account> Accounts { get; set; }
     }
 

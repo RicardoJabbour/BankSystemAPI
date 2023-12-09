@@ -7,6 +7,7 @@
         public DateTime TransactionDate { get; set; }
         public int AccountId { get; set; }
         public Account Account { get; set; }
+        public TransactionType TransactionType { get; set; }
     }
 
 }

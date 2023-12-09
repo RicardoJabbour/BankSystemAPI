@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BankSystemAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/Customer")]
     [ApiController]
     public class CustomerController : ControllerBase
     {
@@ -22,8 +22,7 @@ namespace BankSystemAPI.Controllers
             _mapper = mapper;
         }
 
-        // POST api/<CustomerController>
-        [HttpPost]
+        [HttpPost("/CreateCustomer")]
         public IActionResult CreateCustomer([FromBody] CustomerDTO createCustomerDTO)
         {
             try
@@ -50,18 +49,37 @@ namespace BankSystemAPI.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("api/Customer/GetCustomerInfo")]
         public IActionResult GetCustomerInfo(int customerId)
         {
             try
             {
                 var customer = _customerRepository.GetCustomerInfoById(customerId);
 
-                return Ok(customer);
+                var customerDto = _mapper.Map<CustomerDTO>(customer);
+
+                return Ok(customerDto);
             }
             catch (Exception ex)
             {
                 return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("/api/Customer/GetAllCustomers")]
+        public IActionResult GetAllCustomers()
+        {
+            try
+            {
+                var customers = _customerRepository.GetAllCustomers();
+
+                var customersDto = _mapper.Map<List<CustomerDTO>>(customers);
+
+                return Ok(customersDto);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message.ToString());
             }
         }
 

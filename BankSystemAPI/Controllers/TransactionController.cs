@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BankSystemAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[Controller]")]
     [ApiController]
     public class TransactionController : ControllerBase
     {
@@ -24,8 +24,11 @@ namespace BankSystemAPI.Controllers
             _mapper = mapper;
         }
 
+        //[HttpPost]
+        //public IActionResult MakeTransaction(TransactionType transactionType, ) { }
+
         [HttpPost]
-        public IActionResult MakeTransaction(int customerId, int accountId, int amount)
+        public IActionResult MakeTransaction1(int customerId, int accountId, int amount)
         {
             try
             {
@@ -78,6 +81,23 @@ namespace BankSystemAPI.Controllers
                         return Ok("Transaction Created");
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("GetTransactionsByCustomerId")]
+        public IActionResult GetTransactionsByCustomerId(int customerId)
+        {
+            try
+            {
+                var transactipons = _transactionRepository.GetAllTransactionsByCustomerId(customerId);
+
+                var transactiponsDto = _mapper.Map<List<TransactionDTO>>(transactipons);
+
+                return Ok(transactiponsDto);
             }
             catch (Exception ex)
             {
