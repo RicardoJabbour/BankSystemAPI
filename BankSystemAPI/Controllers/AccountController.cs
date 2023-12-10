@@ -27,6 +27,13 @@ namespace BankSystemAPI.Controllers
             _mapper = mapper;
         }
 
+        /// <summary>
+        /// The API will expose an endpoint which accepts the user information (customerID, initialCredit).
+        /// Once the endpoint is called, a new account will be opened connected to the user whose ID is customerID.
+        //  Also, if initialCredit is not 0, a transaction will be sent to the new account.
+        /// </summary>
+        /// <param name="accountDTO"></param>
+        /// <returns></returns>
         [HttpPost("OpenAccount")]
         public IActionResult OpenAccount([FromBody] AccountDTO accountDTO)
         {

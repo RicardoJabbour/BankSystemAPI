@@ -49,6 +49,11 @@ namespace BankSystemAPI.Controllers
             }
         }
 
+        /// <summary>
+        /// Another Endpoint will output the user information showing Name, Surname, balance, and transactions of the accounts.
+        /// </summary>
+        /// <param name="customerId"></param>
+        /// <returns></returns>
         [HttpGet("GetCustomerInfo")]
         public IActionResult GetCustomerInfo(int customerId)
         {
