@@ -17,7 +17,7 @@ namespace BankSystemAPI.Repositories
         public Customer GetCustomerInfoById(int customerId)
         {
             var customer = _dbContext.Customers
-                           .Include(c => c.Accounts) // Include the associated accounts
+                           .Include(c => c.Accounts)
                            .ThenInclude(a => a.Transactions)
                            .FirstOrDefault(x => x.CustomerId == customerId);
 
@@ -55,16 +55,5 @@ namespace BankSystemAPI.Repositories
 
             return customers;
         }
-
-        //public Customer GetCustomerByAccount(int accountId)
-        //{
-        //    var customer = _dbContext.Customers
-        //                   .Include(c => c.Accounts)
-        //                   .FirstOrDefault(x => x.CustomerId.Equals(
-        //                                        _dbContext.Accounts
-        //                                        .FirstOrDefault(a => a.AccountId == accountId).CustomerId));
-
-        //    return customer;
-        //}
     }
 }

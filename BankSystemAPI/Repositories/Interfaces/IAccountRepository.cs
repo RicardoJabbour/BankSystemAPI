@@ -9,7 +9,6 @@ namespace BankSystemAPI.Repositories.Interfaces
         bool UpdateAccount(Account account);
         List<Account> GetCustomerAccounts(int customerId);
         List<Account> GetAllAccounts(int accountId);
-
         decimal GetAccountLimit(int accountId);
     }
 }

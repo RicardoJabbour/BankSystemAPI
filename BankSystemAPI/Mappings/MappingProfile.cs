@@ -13,7 +13,6 @@ namespace BankSystemAPI.Mappings
             CreateMap<Account, AccountDTO>();
             CreateMap<Transaction, TransactionDTO>();
 
-            // If needed, reverse mappings can be added
             CreateMap<CustomerDTO, Customer>();
             CreateMap<AccountDTO, Account>();
             CreateMap<TransactionDTO, Transaction>();

@@ -14,25 +14,20 @@ namespace BankSystemAPI.Repositories
             _dbContext = dbContext;
         }
 
-        public Transaction GetTransactionById(int transactionId)
-        {
-            return new Transaction();
-        }
-
-        public void AddTransaction(Transaction transaction)
+        public bool AddTransaction(Transaction transaction)
         {
             if (transaction == null)
             {
+                return false;
+
                 throw new ArgumentNullException(nameof(transaction));
             }
 
-            // You may want to perform additional validation or business logic here
-
-            // Add the customer entity to the database context
             _dbContext.Transactions.Add(transaction);
 
-            // Save changes to the database
             _dbContext.SaveChanges();
+
+            return true;
         }
 
         public List<Transaction> GetAllTransactionsByCustomerId(int customerId)
@@ -45,6 +40,8 @@ namespace BankSystemAPI.Repositories
                 var transactionsAccount = _dbContext.Transactions.Where(x => x.AccountId == acountId).ToList();
                 transactions.AddRange(transactionsAccount);
             }
+
+            transactions = transactions.OrderBy(x => x.TransactionDate).ToList();
 
             return transactions;
         }

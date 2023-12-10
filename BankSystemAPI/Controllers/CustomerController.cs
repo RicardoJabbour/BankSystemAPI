@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BankSystemAPI.Controllers
 {
-    [Route("api/Customer")]
+    [Route("api/[Controller]/")]
     [ApiController]
     public class CustomerController : ControllerBase
     {
@@ -22,25 +22,25 @@ namespace BankSystemAPI.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost("/CreateCustomer")]
-        public IActionResult CreateCustomer([FromBody] CustomerDTO createCustomerDTO)
+        [HttpPost("CreateCustomer")]
+        public IActionResult CreateCustomer([FromBody] CustomerDTO customerDTO)
         {
             try
             {
-                if (createCustomerDTO == null)
+                if (customerDTO == null)
                 {
                     return BadRequest("Invalid input data");
                 }
+                else if (String.IsNullOrEmpty(customerDTO.FirstName) || String.IsNullOrEmpty(customerDTO.LastName) || String.IsNullOrEmpty(customerDTO.Email))
+                {
+                    return BadRequest("All Fields are required");
+                }
 
-                // Map the DTO to the Customer entity
-                var newCustomer = _mapper.Map<Customer>(createCustomerDTO);
+                var newCustomer = _mapper.Map<Customer>(customerDTO);
 
-                // Add the customer to the repository
                 _customerRepository.AddCustomer(newCustomer);
 
-                // You may want to handle exceptions and provide appropriate responses
-
-                return Ok("Customer created successfully");
+                return Ok(true);
 
             }
             catch(Exception ex)
@@ -49,7 +49,7 @@ namespace BankSystemAPI.Controllers
             }
         }
 
-        [HttpGet("api/Customer/GetCustomerInfo")]
+        [HttpGet("GetCustomerInfo")]
         public IActionResult GetCustomerInfo(int customerId)
         {
             try
@@ -66,7 +66,7 @@ namespace BankSystemAPI.Controllers
             }
         }
 
-        [HttpGet("/api/Customer/GetAllCustomers")]
+        [HttpGet("GetAllCustomers")]
         public IActionResult GetAllCustomers()
         {
             try

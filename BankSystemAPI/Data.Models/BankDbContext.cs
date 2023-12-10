@@ -15,7 +15,6 @@ namespace BankSystemAPI.Models
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Define relationships between entities (foreign keys, etc.) if needed
             modelBuilder.Entity<Customer>()
                 .HasMany(c => c.Accounts)
                 .WithOne(a => a.Customer)

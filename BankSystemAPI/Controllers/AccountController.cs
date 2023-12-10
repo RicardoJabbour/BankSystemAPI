@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BankSystemAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/")]
     [ApiController]
     public class AccountController : ControllerBase
     {
@@ -27,17 +27,15 @@ namespace BankSystemAPI.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost("/api/Account/OpenAccount")]
+        [HttpPost("OpenAccount")]
         public IActionResult OpenAccount([FromBody] AccountDTO accountDTO)
         {
             try
             {
-                // Create a new account
                 var account = _mapper.Map<Account>(accountDTO);
 
                 _accountRepository.AddAccount(account);
 
-                // If initialCredit is not 0, create a transaction
                 if (accountDTO.Balance != 0)
                 {
                     var transaction = new Transaction
@@ -55,12 +53,11 @@ namespace BankSystemAPI.Controllers
             }
             catch (Exception ex)
             {
-                // Log the exception or handle it according to your needs
-                return StatusCode(500, "An error occurred while processing your request.");
+                return BadRequest(ex.Message);
             }
         }
 
-        [HttpGet("/api/Account/GetCustomerAccounts")]
+        [HttpGet("GetCustomerAccounts")]
         public IActionResult GetCustomerAccounts(int customerId)
         {
             try
@@ -77,7 +74,7 @@ namespace BankSystemAPI.Controllers
             }
         }
 
-        [HttpGet("/api/Account/GetAllAccounts")]
+        [HttpGet("GetAllAccounts")]
         public IActionResult GetAllAccounts(int accountId)
         {
             try
@@ -95,7 +92,7 @@ namespace BankSystemAPI.Controllers
 
         }
 
-        [HttpGet("/api/Account/GetAccountLimit")]
+        [HttpGet("GetAccountLimit")]
         public IActionResult GetAccountLimit(int accountId)
         {
             try

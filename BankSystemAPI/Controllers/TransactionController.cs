@@ -4,10 +4,11 @@ using BankSystemAPI.Data.Models.Entities;
 using BankSystemAPI.Repositories.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics.Eventing.Reader;
 
 namespace BankSystemAPI.Controllers
 {
-    [Route("api/[Controller]")]
+    [Route("api/[Controller]/")]
     [ApiController]
     public class TransactionController : ControllerBase
     {
@@ -24,62 +25,70 @@ namespace BankSystemAPI.Controllers
             _mapper = mapper;
         }
 
-        //[HttpPost]
-        //public IActionResult MakeTransaction(TransactionType transactionType, ) { }
-
-        [HttpPost]
-        public IActionResult MakeTransaction1(int customerId, int accountId, int amount)
+        [HttpPost("MakeTransaction")]
+        public IActionResult MakeTransaction(List<TransactionDTO> transactions)
         {
             try
             {
-                var customer = _customerRepository.GetCustomerById(customerId);
-
-                if(customer ==  null)
+                if (transactions[0].TransactionType == TransactionType.Deposit)
                 {
-                    return NotFound($"Customer with ID {customerId} not found.");
+                    var accountToAddTo = _accountRepository.GetAccountById(transactions[0].AccountId);
+                    accountToAddTo.Balance = accountToAddTo.Balance + transactions[0].Amount;
+                    var accountTo = _accountRepository.UpdateAccount(accountToAddTo);
+
+                    var newTransaction = _mapper.Map<Transaction>(transactions[0]);
+
+                    var _transactionFrom = _transactionRepository.AddTransaction(newTransaction);
+
+                    return Ok(_transactionFrom);
                 }
-                else 
+                else if (transactions[0].TransactionType == TransactionType.Withdraw)
                 {
-                    var accountToAddTo = _accountRepository.GetAccountById(accountId);
-
-                    if(accountToAddTo == null)
+                    var accountToRetreveFrom = _accountRepository.GetAccountById(transactions[0].AccountId);
+                    accountToRetreveFrom.Balance = accountToRetreveFrom.Balance - transactions[0].Amount;
+                    
+                    if(accountToRetreveFrom.Balance < 0)
                     {
-                        return NotFound($"Account with ID {accountId} not found.");
+                        return BadRequest("You can't make this transaction");
                     }
-                    else
+
+                    var accountTo = _accountRepository.UpdateAccount(accountToRetreveFrom);
+
+                    var newTransaction = _mapper.Map<Transaction>(transactions[0]);
+
+                    var _transactionFrom = _transactionRepository.AddTransaction(newTransaction);
+
+                    return Ok(_transactionFrom);
+                }
+                else if(transactions[0].TransactionType == TransactionType.Transfer && transactions[1] != null){
+
+                    var accountToRetreveFrom = _accountRepository.GetAccountById(transactions[0].AccountId);
+                    accountToRetreveFrom.Balance = accountToRetreveFrom.Balance - transactions[0].Amount;
+
+                    if (accountToRetreveFrom.Balance < 0)
                     {
-                        var transactionDTO = new TransactionDTO
-                        {
-                            Amount = amount,
-                            TransactionDate = DateTime.UtcNow,
-                            AccountId = accountId,
-                        };
-
-                        var transaction = _mapper.Map<Transaction>(transactionDTO);
-
-                        _transactionRepository.AddTransaction(transaction);
-
-                        var customerAccount = customer.Accounts.FirstOrDefault(x => x.AccountId == accountId);
-
-                        if (customerAccount?.AccountId == accountId) 
-                        {
-                            customerAccount.Balance = customerAccount.Balance + amount;
-                            _accountRepository.UpdateAccount(customerAccount);
-                        }
-                        else
-                        {
-
-                            var acountToRemoveFrom = customer.Accounts.FirstOrDefault(x => x.CustomerId == customerId);
-                            acountToRemoveFrom.Balance = acountToRemoveFrom.Balance - amount;
-                            _accountRepository.UpdateAccount(acountToRemoveFrom);
-
-
-                            accountToAddTo.Balance = accountToAddTo.Balance + amount;
-                            _accountRepository.UpdateAccount(accountToAddTo);
-                        }
-
-                        return Ok("Transaction Created");
+                        return BadRequest("You can't make this transaction");
                     }
+
+                    var accountfrom = _accountRepository.UpdateAccount(accountToRetreveFrom);
+
+                    var newTransactionFrom = _mapper.Map<Transaction>(transactions[0]);
+
+                    var _transactionFrom = _transactionRepository.AddTransaction(newTransactionFrom);
+
+                    var accountToAddTo = _accountRepository.GetAccountById(transactions[1].AccountId);
+                    accountToAddTo.Balance = accountToAddTo.Balance + transactions[1].Amount;
+                    var accountTo = _accountRepository.UpdateAccount(accountToAddTo);
+
+                    var newTransactionTo = _mapper.Map<Transaction>(transactions[1]);
+
+                    var _transactionTo = _transactionRepository.AddTransaction(newTransactionTo);
+
+                    return Ok(_transactionTo && _transactionFrom);
+                }
+                else
+                {
+                    return BadRequest();
                 }
             }
             catch (Exception ex)

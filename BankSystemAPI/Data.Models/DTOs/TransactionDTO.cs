@@ -10,7 +10,7 @@ namespace BankSystemAPI.Data.Models.DTOs
         public int AccountId { get; set; }
         public decimal Amount { get; set; }
         public TransactionType  TransactionType { get; set; }
-        public AccountDTO Account { get; set; }
+        public AccountDTO? Account { get; set; }
 
     }
 }
